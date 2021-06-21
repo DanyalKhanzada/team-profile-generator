@@ -45,6 +45,7 @@ const promptManager = () => {
             message: 'Would you like to enter another employee?',
             default: false
         }])
+        
         // destructure manager properties from the prompt object
         .then(({ name, id, email, officeNumber, confirmAddEmployee }) => {
             let employee = new Manager(name, id, email, officeNumber);
