@@ -1,0 +1,102 @@
+/* page styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #d6e2e9;
+    font-family: 'Roboto', sans-serif;
+    color: #4d616f;
+}
+
+/* header */
+.hero {
+    background: linear-gradient(45deg, #fad2e1, #c5dedd, #99c1de);
+    box-shadow: 0 5px 10px 3px rgba(0, 0, 0, 0.05);
+}
+
+.hero-body {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+
+h1 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 64px;
+    color: #f0efeb;
+    margin: 0;
+}
+
+/* headings */
+h4 {
+    font-style: italic;
+}
+
+h5 {
+    margin: 0;
+}
+
+.fa-mug-hot, .fa-clipboard {
+    vertical-align: 11%;
+}
+
+/* container */
+.grid-lg, .container {
+    padding: 0;
+    margin: 0 auto;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+/* icons */
+i {
+    font-size: 18px;
+    color: #668a89;
+}
+
+h4 i {
+    color: #4d616f;
+}
+
+
+/* card layout */
+.card {
+    border: none;
+    border-radius: 5px;
+    background: #f0efeb;
+    box-shadow: 0 5px 10px 3px rgba(0, 0, 0, 0.1);
+    font-weight: 300;
+}
+
+.card-header {
+    background: #dbe7e4;
+    border-radius: 5px 5px 0 0;
+    font-weight: 400;
+}
+
+.grid-custom {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto;
+    grid-gap: 5px 10px;
+    align-items: center;
+}
+
+/* links */
+a, a:visited {
+    color: #99c1de;
+}
+
+a:hover {
+    color: #668a89;
+    text-decoration: none;
+    transition: all 1s ease;
+}
