@@ -2,16 +2,16 @@ const { expect, test } = require('@jest/globals');
 const Engineer = require('../lib/Engineer.js');
 
 test('creates engineer object', () => {
-    const engineer = new Engineer('Elizabeth', 5, 'email@somewhereinthecloud.com', 'mister-darcy');
+    const engineer = new Engineer('Alina', 5, 'email@yahoo.com', 'misses-alina');
 
-    expect(engineer.name).toBe('Elizabeth');
+    expect(engineer.name).toBe('Alina');
     expect(engineer.id).toBeGreaterThanOrEqual(1);
     expect(engineer.name).toEqual(expect.any(String));
     expect(engineer.github).toEqual(expect.any(String));
 })
 
 test('gets engineer name', () => {
-    const engineer = new Engineer('Elizabeth', 5, 'email@somewhereinthecloud.com', 'mister-darcy');
+    const engineer = new Engineer('Alina', 5, 'email@yahoo.com', 'misses-alina');
 
     const name = engineer.getName();
 
@@ -19,7 +19,7 @@ test('gets engineer name', () => {
 });
 
 test('gets engineer id', () => {
-    const engineer = new Engineer('Elizabeth', 5, 'email@somewhereinthecloud.com', 'mister-darcy');
+    const engineer = new Engineer('Alina', 5, 'email@yahoo.com', 'misses-alina');
 
     const id = engineer.getId();
 
@@ -27,7 +27,7 @@ test('gets engineer id', () => {
 });
 
 test('gets engineer email', () => {
-    const engineer = new Engineer('Elizabeth', 5, 'email@somewhereinthecloud.com', 'mister-darcy');
+    const engineer = new Engineer('Alina', 5, 'email@yahoo.com', 'misses-alina');
 
     const email = engineer.getEmail();
 
@@ -35,7 +35,7 @@ test('gets engineer email', () => {
 });
 
 test('gets engineer github', () => {
-    const engineer = new Engineer('Elizabeth', 5, 'email@somewhereinthecloud.com', 'mister-darcy');
+    const engineer = new Engineer('Alina', 5, 'email@yahoo.com', 'misses-alina');
 
     const github = engineer.getGithub();
 
@@ -43,7 +43,7 @@ test('gets engineer github', () => {
 })
 
 test('gets engineer role', () => {
-    const engineer = new Engineer('Elizabeth', 5, 'email@somewhereinthecloud.com', 'mister-darcy');
+    const engineer = new Engineer('Alina', 5, 'email@yahoo.com', 'misses-alina');
 
     const role = engineer.getRole();
 
