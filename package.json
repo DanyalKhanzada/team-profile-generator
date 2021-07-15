@@ -1,5 +1,26 @@
 {
   "dependencies": {
+    "inquirer": "^8.1.2",
     "jest": "^27.0.5"
-  }
+  },
+  "name": "team-profile-generator",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanyalKhanzada/team-profile-generator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DanyalKhanzada/team-profile-generator/issues"
+  },
+  "homepage": "https://github.com/DanyalKhanzada/team-profile-generator#readme"
 }
