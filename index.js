@@ -1,288 +1,161 @@
-const inquirer = require('inquirer')
-const Employee = require('./lib/Employee.js');
-const Manager = require('./lib/Manager.js');
-const Engineer = require('./lib/Engineer.js');
-const Intern = require('./lib/Intern.js');
-const pageTemplate = require('./src/template.js');
-const { generatePage, copyCSS } = require('./src/generate-page.js');
+const inquirer = require('inquirer');
+const fs = require('fs');
+const generatePage = require('./src/page-template.js')
+const formatName = require('./utils/helper');
+const allEmployees = [];
 
-// check if string contains a letter
-const regExp = /[a-zA-Z]/g;
-// check if string is in email format
-const regExpEmail = /\S+@\S+\.\S+/;
-const employees = [];
+const questions = [
+    {
+        type: 'list',
+        name: 'role',
+        message: 'What is the employee\'s role?',
+        choices: // function to allow only one manager to be created
+            () => {
+            if (allEmployees.some(employee => employee.role === 'Manager')) {
+                return ['Engineer', 'Intern']    
+            } else {
+                return ['Manager', 'Engineer', 'Intern']
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'firstName',
+        message: ({ role }) => `What is the ${role.toLowerCase()}'s first name?`,
+        validate: nameInput => {
+            if (nameInput) {
+                return true;
+            } else {
+                console.log('Please enter the first name!');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'lastName',
+        message: ({ firstName }) => `What is ${formatName(firstName)}'s last name?`,
+        validate: nameInput => {
+            if (nameInput) {
+                return true;
+            } else {
+                console.log('Please enter the last name!');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'id',
+        message: ({ firstName }) => `What is ${formatName(firstName)}'s ID number?`,
+        validate: idInput => {
+            if (!isNaN(parseInt(idInput))) {
+                return true;
+            } else {
+                console.log('Please enter a valid ID number!');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'officeNumber',
+        message:  ({ firstName }) => `What is ${formatName(firstName)}'s office number?`,
+        when: ({ role }) => {
+            if (role === 'Manager') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        validate: officeNumberInput => {
+            if (!isNaN(parseInt(officeNumberInput))) {
+                return true;
+            } else {
+                console.log('Please enter a valid number!');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'github',
+        message: ({ firstName }) => `What is ${formatName(firstName)}'s GitHub userame?`,
+        when: ({ role }) => {
+            if (role === 'Engineer') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        validate: githubInput => {
+            if (githubInput) {
+                return true;
+            } else {
+                console.log('Please enter a username!');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'school',
+        message: ({ firstName }) => `What school does ${formatName(firstName)} go to?`,
+        when: ({ role }) => {
+            if (role === 'Intern') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        validate: schoolInput => {
+            if (schoolInput) {
+                return true;
+            } else {
+                console.log('Please enter a school name!');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'confirm',
+        name: 'addEmployee',
+        message: 'Would you like to add another employee?',
+        default: true
+    }
+]
 
-// prompt user for team members
-const promptManager = () => {
-    console.log(`
-▫ ╔═══════════════╗ ▫
-╔═╝               ╚═╗
-║ Your team profile ║
-╚═╗               ╔═╝
-▫ ╚═══════════════╝ ▫
+const promptUser = () => {
+
+    return inquirer.prompt(questions)
+    .then(userResponse => {
+
+        // adds to employee data array
+        allEmployees.push(userResponse);
+
+        // adds another employee based on user selection
+        if (userResponse.addEmployee) {
+            return promptUser();
+        } else {
+            return allEmployees;
+        };
+    });
+};
+
+const writePage = (htmlContent) => {
+    fs.writeFile('./dist/index.html', htmlContent, err => {
+        if (err) {
+            throw err
+        };
+        console.log('Page created successfully!');
+    });
+};
+
+console.log(`
+Welcome to the Team Profile Generator!  Let's add some employees!
 `);
-    return inquirer
-        .prompt([{
-            type: 'text',
-            name: 'name',
-            message: 'Please enter your manager\'s name',
-            validate: nameInput => {
-                if (!regExp.test(nameInput)) {
-                    return 'Please enter a valid name.';
-                }
-                else {
-                    return true;
-                }
-            }
-        },
-        {
-            type: 'text',
-            name: 'id',
-            message: 'Please enter your manager\'s ID',
-            validate: idInput => {
-                if (!idInput || isNaN(idInput)) {
-                    return 'Please enter a valid ID.';
-                }
-                else {
-                    return true;
-                }
-            }
-        },
-        {
-            type: 'text',
-            name: 'email',
-            message: 'Please enter your manager\'s email',
-            validate: emailInput => {
-                if (!regExpEmail.test(emailInput)) {
-                    return 'Please enter a valid email.';
-                }
-                else {
-                    return true;
-                }
-            }
-        },
-        {
-            type: 'text',
-            name: 'officeNumber',
-            message: 'Please enter your manager\'s office number',
-            validate: numberInput => {
-                if (!numberInput || isNaN(numberInput)) {
-                    return 'Please enter a valid number.';
-                }
-                else {
-                    return true;
-                }
-            }
-        },
-        {
-            type: 'confirm',
-            name: 'confirmAddEmployee',
-            message: 'Would you like to enter another employee?',
-            default: false
-        }])
-        // destructure manager properties from the prompt object
-        .then(({ name, id, email, officeNumber, confirmAddEmployee }) => {
-            let employee = new Manager(name, id, email, officeNumber);
-            employees.push(employee);
-            // if user chooses to enter another employee
-            if (confirmAddEmployee) {
-                return inquirer
-                    .prompt([{
-                        type: 'list',
-                        name: 'whichEmployee',
-                        message: 'Please choose an employee to add to your team.',
-                        choices: ['Engineer', 'Intern']
-                    }])
-                    .then(({ whichEmployee }) => {
-                        if (whichEmployee === 'Engineer') {
-                            return promptEngineer();
-                        }
-                        else {
-                            return promptIntern();
-                        }
-                    })
-            }
-            else {
-                return employees;
-            }
-        })
-}
 
-const promptEngineer = () => {
-    return inquirer
-        .prompt([{
-            type: 'text',
-            name: 'name',
-            message: 'Please enter your engineer\'s name',
-            validate: nameInput => {
-                if (!regExp.test(nameInput)) {
-                    return 'Please enter a valid name.';
-                }
-                else {
-                    return true;
-                }
-            }
-        },
-        {
-            type: 'text',
-            name: 'id',
-            message: 'Please enter your engineer\'s ID',
-            validate: idInput => {
-                if (!idInput || isNaN(idInput)) {
-                    return 'Please enter a valid ID.';
-                }
-                else {
-                    return true;
-                }
-            }
-        },
-        {
-            type: 'text',
-            name: 'email',
-            message: 'Please enter your engineer\'s email',
-            validate: emailInput => {
-                if (!regExpEmail.test(emailInput)) {
-                    return 'Please enter a valid email.';
-                }
-                else {
-                    return true;
-                }
-            }
-        },
-        {
-            type: 'text',
-            name: 'github',
-            message: 'Please enter your engineer\'s GitHub username',
-            validate: githubInput => {
-                if (!githubInput || githubInput.includes(' ')) {
-                    return 'Please enter a username.';
-                }
-                else {
-                    return true;
-                }
-            }
-        },
-        {
-            type: 'confirm',
-            name: 'confirmAddEmployee',
-            message: 'Would you like to enter another employee?',
-            default: false
-        }])
-        .then(({ name, id, email, github, confirmAddEmployee }) => {
-            let employee = new Engineer(name, id, email, github);
-            employees.push(employee);
-            // if user chooses to add another employee
-            if (confirmAddEmployee) {
-                return inquirer
-                    .prompt([{
-                        type: 'list',
-                        name: 'whichEmployee',
-                        message: 'Please choose an employee to add to your team.',
-                        choices: ['Engineer', 'Intern']
-                    }])
-                    .then(({ whichEmployee }) => {
-                        if (whichEmployee === 'Engineer') {
-                            return promptEngineer();
-                        }
-                        else {
-                            return promptIntern();
-                        }
-                    })
-            }
-            else {
-                return employees;
-            }
-        })
-}
-
-const promptIntern = () => {
-    return inquirer
-        .prompt([{
-            type: 'text',
-            name: 'name',
-            message: 'Please enter your intern\'s name',
-            validate: nameInput => {
-                if (!regExp.test(nameInput)) {
-                    return 'Please enter a valid name.';
-                }
-                else {
-                    return true;
-                }
-            }
-        },
-        {
-            type: 'text',
-            name: 'id',
-            message: 'Please enter your intern\'s ID',
-            validate: idInput => {
-                if (!idInput || isNaN(idInput)) {
-                    return 'Please enter a valid ID.';
-                }
-                else {
-                    return true;
-                }
-            }
-        },
-        {
-            type: 'text',
-            name: 'email',
-            message: 'Please enter your intern\'s email',
-            validate: emailInput => {
-                if (!regExpEmail.test(emailInput)) {
-                    return 'Please enter a valid email.';
-                }
-                else {
-                    return true;
-                }
-            }
-        },
-        {
-            type: 'text',
-            name: 'school',
-            message: 'Please enter your intern\'s school',
-            validate: schoolInput => {
-                if (!regExp.test(schoolInput)) {
-                    return 'Please enter a valid school.';
-                }
-                else {
-                    return true;
-                }
-            }
-        },
-        {
-            type: 'confirm',
-            name: 'confirmAddEmployee',
-            message: 'Would you like to enter another employee?',
-            default: false
-        }])
-        .then(({ name, id, email, school, confirmAddEmployee }) => {
-            let employee = new Intern(name, id, email, school);
-            employees.push(employee);
-            // if user chooses to add another employee
-            if (confirmAddEmployee) {
-                return inquirer
-                    .prompt([{
-                        type: 'list',
-                        name: 'whichEmployee',
-                        message: 'Please choose an employee to add to your team.',
-                        choices: ['Engineer', 'Intern']
-                    }])
-                    .then(({ whichEmployee }) => {
-                        if (whichEmployee === 'Engineer') {
-                            return promptEngineer();
-                        }
-                        else {
-                            return promptIntern();
-                        }
-                    })
-            }
-            else {
-                return employees;
-            }
-        })
-}
-
-promptManager()
-    .then(data => pageTemplate(data))
-    .then(content => generatePage(content))
-    .then(copyCSS());
+promptUser()
+    .then(data => generatePage(data))
+    .then(generatedHtml => writePage(generatedHtml))
+    .catch(err => console.log(err));
