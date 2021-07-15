@@ -1,42 +1,33 @@
-const { expect, test } = require('@jest/globals');
-const Employee = require('../lib/Employee.js');
+const Employee = require ('../lib/Employee');
+const { expectToBe, expectStr, expectNum } = require('../utils/expect');
 
-test('creates employee object', () => {
-    const employee = new Employee('Vardah', 123, 'email@icloud.com');
+const employee = new Employee('Ahmed', 'Bashir', 1);
 
-    expect(employee.name).toBe('Vardah');
-    expect(employee.id).toBeGreaterThanOrEqual(1);
-    expect(employee.name).toEqual(expect.any(String));
+test('creates a employee object', () => {
+    expectToBe(employee.firstName,'Ahmed');
+    expectToBe(employee.lastName, 'Bashir');
+    expectNum(employee.id);
+    expectStr(employee.email, '@');
+    expectToBe(employee.role, 'Employee');
+    expectToBe(employee.icon, 'fas fa-briefcase');
 });
 
-test('gets employee name', () => {
-    const employee = new Employee('Vardah', 123, 'email@icloud.com');
-
-    const name = employee.getName();
-
-    expect(name).toEqual(expect.stringContaining(employee.name));
+test('gets employee\'s name', () => {
+    expectStr(employee.getName(), `${employee.firstName} ${employee.lastName}`);
 });
 
-test('gets employee id', () => {
-    const employee = new Employee('Vardah', 123, 'email@icloud.com');
-
-    const id = employee.getId();
-
-    expect(id).toEqual(expect.stringContaining(employee.id.toString()));
+test('gets employee\'s ID', () => {
+    expectStr(employee.getId(), `${employee.id}`);
 });
 
-test('gets employee email', () => {
-    const employee = new Employee('Vardah', 123, 'email@icloud.com');
-
-    const email = employee.getEmail();
-
-    expect(email).toEqual(expect.stringContaining(employee.email));
+test('gets employee\'s email', () => {
+    expectStr(employee.getEmail(), employee.email);
 });
 
-test('gets employee role', () => {
-    const employee = new Employee('Vardah', 123, 'email@icloud.com');
+test('gets employee\'s role', () => {
+    expectStr(employee.getRole(), employee.role);
+});
 
-    const role = employee.getRole();
-
-    expect(role).toBe('Employee');
+test('gets employee\'s icon', () => {
+    expectStr(employee.getIcon(), employee.icon);
 });

@@ -1,48 +1,38 @@
-test('creates intern object', () => {
-    const intern = new Intern('Rebecca', 304, 'email@uoft.com', 'University of Toronto');
+const Intern = require('../lib/Intern');
+const { expectToBe, expectStr, expectNum } = require('../utils/expect');
 
-    expect(intern.name).toBe('Rebecca');
-    expect(intern.id).toBeGreaterThanOrEqual(1);
-    expect(intern.name).toEqual(expect.any(String));
-    expect(intern.school).toEqual(expect.any(String));
-})
+const intern = new Intern('Ahmed', 'Bashir', 1, 'UCF');
 
-test('gets intern name', () => {
-    const intern = new Intern('Rebecca', 304, 'email@uoft.com', 'University of Toronto');
-
-    const name = intern.getName();
-
-    expect(name).toEqual(expect.stringContaining(intern.name));
+test('creates an intern object', () => {
+    expectToBe(intern.firstName, 'Ahmed');
+    expectToBe(intern.lastName, 'Bashir');
+    expectNum(intern.id);
+    expectStr(intern.email, '@');
+    expectToBe(intern.role, 'Intern');
+    expectToBe(intern.school, 'UCF');
+    expectToBe(intern.icon, 'fas fa-graduation-cap');
 });
 
-test('gets intern id', () => {
-    const intern = new Intern('Rebecca', 304, 'email@uoft.com', 'University of Toronto');
-
-    const id = intern.getId();
-
-    expect(id).toEqual(expect.stringContaining(intern.id.toString()));
+test('gets intern\'s name', () => {
+    expectStr(intern.getName(), `${intern.firstName} ${intern.lastName}`);
 });
 
-test('gets intern email', () => {
-    const intern = new Intern('Rebecca', 304, 'email@uoft.com', 'University of Toronto');
-
-    const email = intern.getEmail();
-
-    expect(email).toEqual(expect.stringContaining(intern.email));
+test('gets intern\'s ID', () => {
+    expectStr(intern.getId(), `${intern.id}`);
 });
 
-test('gets intern school', () => {
-    const intern = new Intern('Rebecca', 304, 'email@uoft.com', 'University of Toronto');
+test('gets intern\'s email', () => {
+    expectStr(intern.getEmail(), intern.email);
+});
 
-    const school = intern.getSchool();
+test('gets intern\'s role', () => {
+    expectStr(intern.getRole(), intern.role);
+});
 
-    expect(school).toEqual(expect.stringContaining(intern.school));
-})
+test('gets intern\'s school', () => {
+    expectStr(intern.getSchool(), intern.school);
+});
 
-test('gets intern role', () => {
-    const intern = new Intern('Rebecca', 304, 'email@uoft.com', 'University of Toronto');
-
-    const role = intern.getRole();
-
-    expect(role).toBe('Intern');
-})
+test('gets intern\'s icon', () => {
+    expectStr(intern.getIcon(), intern.icon);
+});
