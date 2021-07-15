@@ -1,48 +1,38 @@
-test('creates manager object', () => {
-    const manager = new Manager('Zeenab', 1, 'email@qadam.ca', 200);
+const Manager = require ('../lib/Manager');
+const { expectToBe, expectStr, expectNum } = require('../utils/expect');
 
-    expect(manager.name).toBe('Zeenab');
-    expect(manager.id).toBeGreaterThanOrEqual(1);
-    expect(manager.name).toEqual(expect.any(String));
-    expect(manager.officeNumber).toBeGreaterThanOrEqual(1);
+const manager = new Manager('Ahmed', 'Bashir', 1, 1);
+
+test('creates a manager object', () => {
+    expectToBe(manager.firstName,'Ahmed');
+    expectToBe(manager.lastName, 'Bashir');
+    expectNum(manager.id);
+    expectStr(manager.email, '@');
+    expectToBe(manager.role, 'Manager');
+    expectNum(manager.officeNumber);
+    expectToBe(manager.icon, 'fas fa-mug-hot');
 });
 
-test('gets manager name', () => {
-    const manager = new Manager('Zeenab', 1, 'email@qadam.ca', 200);
-
-    const name = manager.getName();
-
-    expect(name).toEqual(expect.stringContaining(manager.name));
+test('gets manager\'s name', () => {
+    expectStr(manager.getName(), `${manager.firstName} ${manager.lastName}`);
 });
 
-test('gets manager id', () => {
-    const manager = new Manager('Zeenab', 1, 'email@qadam.ca', 200);
-
-    const id = manager.getId();
-
-    expect(id).toEqual(expect.stringContaining(manager.id.toString()));
+test('gets manager\'s ID', () => {
+    expectStr(manager.getId(), `${manager.id}`);
 });
 
-test('gets manager email', () => {
-    const manager = new Manager('Zeenab', 1, 'email@qadam.ca', 200);
-
-    const email = manager.getEmail();
-
-    expect(email).toEqual(expect.stringContaining(manager.email));
+test('gets manager\'s email', () => {
+    expectStr(manager.getEmail(), manager.email);
 });
 
-test('gets manager office number', () => {
-    const manager = new Manager('Zeenab', 1, 'email@qadam.ca', 200);
-
-    const officeNumber = manager.getOfficeNumber();
-
-    expect(officeNumber).toEqual(expect.stringContaining(manager.officeNumber.toString()));
+test('gets manager\'s role', () => {
+    expectStr(manager.getRole(), manager.role);
 });
 
-test('gets manager role', () => {
-    const manager = new Manager('Zeenab', 1, 'email@qadam.ca', 200);
+test('gets manager\'s office number', () => {
+    expectStr(manager.getOfficeNumber(), `${manager.officeNumber}`);
+});
 
-    const role = manager.getRole();
-
-    expect(role).toBe('Manager');
+test('gets manager\'s icon', () => {
+    expectStr(manager.getIcon(), manager.icon);
 });
